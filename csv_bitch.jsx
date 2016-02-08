@@ -93,7 +93,7 @@ function settingsDialog () {
     dialog.outputDirButton = dialog.add("button", [380, 210, 440, 230], "Browse");
 
     dialog.outputDirButton.onClick = function () {
-        dirName = Folder.selectDialog("Select output folder:", '~');
+        dirName = Folder.selectDialog("Select output directory:", '~');
         if (dirName != null) {
             dialog.outputDirInput.text = dirName;
         }
@@ -118,6 +118,9 @@ function settingsDialog () {
     
     dialog.label6a.graphics.foregroundColor = gray;  
     dialog.label6b.graphics.foregroundColor = gray;  
+
+
+    // ******************** Bottom button rows:  *********************************************    
 
     dialog.okButton     = dialog.add("button", [20,  365, 105, 385], "Go");
     dialog.cancelButton = dialog.add("button", [120, 365, 210, 385], "Cancel");
@@ -154,7 +157,6 @@ function settingsDialog () {
             alert ("Output dir does not exist");
             return false;
         }
-
 
         // dialog.status.text = "Working...";
         dialog.enabled = false;

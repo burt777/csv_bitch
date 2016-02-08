@@ -8,6 +8,8 @@ If the checkbox for Case Sensitivity is checked, the matching between input file
 
 If the checkbox for line 0 is checked, a file is generated for line 0 as well. This is identical to the input file (except for letter casing if case sensitivity is NOT on). 
 
+There's nothing fancy about the way CSV (comma seperated values) are read. There's no escape character (just use a different delimiter if you want to use the ; in a field). There's no support for quoted text, etcetera. If a line contains more values than line 0, the surplus values are simply ignored without warning. If a line contains less values, a warning is added to the file name. 
+
 === Installation ===
 
 Easy:
@@ -19,5 +21,5 @@ If you want to merge all PDFs into one big document (one page per PDF), you can 
 
 "/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o ~/Desktop/Output.pdf ~/*.pdf
 
-Where "~/Desktop/Output.pdf" is the output file
-And "~/*.pdf" are the input files; meaning all (*) pdf files in home folder ~. Change the home folder in whatever you used as output folder.
+Where "~/Desktop/Output.pdf" is the output file you're creating
+And "~/*.pdf" are the input files; meaning all (*) .pdf files in home directory ~. Change the home directory in whatever you used as output directory.
