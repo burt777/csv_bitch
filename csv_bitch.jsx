@@ -6,7 +6,7 @@ that are text fields in the PDF. The PDF is opened, and for every consecutive li
 through last), the fields are placed in the pdf where the words of line 1 were found.
 
 More info / latest version / readme:
-https://github.com/burt777/csv_bitch/blob/master/csv_bitch.jsx
+https://github.com/burt777/csv_bitch
 
 ************************************************************************************* */
 
