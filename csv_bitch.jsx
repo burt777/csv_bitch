@@ -1,46 +1,27 @@
-// var actionSet = 'Actie';
-// var sourceDir = '/Users/prepress2/bart';
-var win = new Window("palette", "Fonts", undefined);  
-var winGraphics = win.graphics;  
-var gray = winGraphics.newPen(winGraphics.BrushType.SOLID_COLOR, [0.5,0.5,0.5], 1);
-
-
-saveOptions = new PDFSaveOptions();
-
-// Call the main function:
-var goGoGo = settingsDialog();
 
 /* ***************************************************************************************************
+
 Choose a PDF and a CSV file, the first line (line 0!!) in the CSV should contain words/texts 
 that are text fields in the PDF. The PDF is opened, and for every consecutive line (line 1 
 through last), the fields are placed in the pdf where the words of line 1 were found.
 
+More info / latest version / readme:
+https://github.com/burt777/csv_bitch/blob/master/csv_bitch.jsx
+
 ************************************************************************************* */
 
+var docLink = "https://github.com/burt777/csv_bitch";
 
-/*
-// this is an old automated way, if the pdf and csv have identical names, this code can find, match and fix them:
-files = new Array();
+// how to save output files:
+var saveOptions = new PDFSaveOptions();
 
-// get the dirs, one for every action:
-files = Folder(sourceDir).getFiles('*.csv');
+// define the color grey: 
+var win = new Window("palette", "Fonts", undefined);  
+var winGraphics = win.graphics;  
+var gray = winGraphics.newPen(winGraphics.BrushType.SOLID_COLOR, [0.5,0.5,0.5], 1);
 
-var filesDone = 0;
-for (var fileNr = 0; fileNr < files.length; fileNr++) {
-
-    var pdfFileName = files[fileNr].name.replace('.csv', '.pdf');
-    pdfFile = File(pdfFileName);
-
-    if (pdfFile.exists == true) {
-        fixFile(files[fileNr], pdfFile);
-
-        // increment counter
-        filesDone = filesDone + 1;
-    }
-}
-*/
-
-
+// Call the main function:
+var goGoGo = settingsDialog();
 
 
 function settingsDialog () {
@@ -111,9 +92,6 @@ function settingsDialog () {
     dialog.outputDirInput.text = "~";
     dialog.outputDirButton = dialog.add("button", [380, 210, 440, 230], "Browse");
 
-
-
-
     dialog.outputDirButton.onClick = function () {
         dirName = Folder.selectDialog("Select output folder:", '~');
         if (dirName != null) {
@@ -121,10 +99,6 @@ function settingsDialog () {
         }
         return true;
     }
-
-
-
-
     
     // ******************** Case Sensitive: *********************************************    
     dialog.caseSensitiveBox = dialog.add('checkbox', [20, 250, 210, 265], " Find case sensitive");
@@ -145,12 +119,12 @@ function settingsDialog () {
     dialog.label6a.graphics.foregroundColor = gray;  
     dialog.label6b.graphics.foregroundColor = gray;  
 
-    dialog.okButton     = dialog.add("button", [20,  365, 105, 385], "Ok");
+    dialog.okButton     = dialog.add("button", [20,  365, 105, 385], "Go");
     dialog.cancelButton = dialog.add("button", [120, 365, 210, 385], "Cancel");
+    dialog.helpButton   = dialog.add("button", [225, 365, 300, 385], "(?) Help");
 
-    dialog.status      = dialog.add("statictext", [230, 365, 380, 385]);
+    dialog.status      = dialog.add("statictext", [30, 345, 380, 365]);
     dialog.status.text = "...";
-
 
     dialog.okButton.onClick = function () {
 
@@ -166,6 +140,22 @@ function settingsDialog () {
 
         dialog.status.text = ("caseSEenSitive: " + returnArray['caseSensitive'] + ", line zero: " + returnArray['includeLineZero']);
 
+        if (File(returnArray['csvFileName']).exists == false) {
+            alert ("CSV File does not exist");
+            return false;
+        }
+
+        if (File(returnArray['inFileName']).exists == false) {
+            alert ("Input file does not exist");
+            return false;
+        }
+
+        if (Folder(returnArray['outputDir']).exists == false) {
+            alert ("Output dir does not exist");
+            return false;
+        }
+
+
         // dialog.status.text = "Working...";
         dialog.enabled = false;
         fixFile(returnArray);
@@ -178,8 +168,12 @@ function settingsDialog () {
 
     dialog.cancelButton.onClick = function () {
         dialog.status.text = "done";
-        // alert(dialog.status.text + ": Cancel clicked");
         dialog.close();
+        return false;
+    }
+
+    dialog.helpButton.onClick = function () {
+        openURL(docLink);
         return false;
     }
 
@@ -196,6 +190,15 @@ function settingsDialog () {
     return true;
 }
 
+  
+function openURL( address ) {  
+    var f = File( Folder.temp + '/aiOpenURL.url' );  
+    f.open( 'w' );  
+    f.write( '[InternetShortcut]' + '\r' + 'URL=' + address + '\r' );  
+    f.close();  
+    f.execute();  
+    return true;
+}
 
 function readInCSV(fileObj, delimiter) {
      var fileArray = new Array();
@@ -219,7 +222,6 @@ function getFileExtension(inputFileName) {
 }
 
 function fixFile(settingsArray) {
-    // alert (file.name + " (is a " + typeof(fileName) + ") is getting " + actionName + "ed");
 
     inFile = File(settingsArray['inFileName']);
     csvFile = File(settingsArray['csvFileName']);
@@ -231,7 +233,7 @@ function fixFile(settingsArray) {
     var colItems = new Array();
     docRef = app.open(inFile);
 
-    // Find all texts from header:
+    // Find all texts from header (line 0):
     for (var textFrameNr = docRef.textFrames.length - 1; textFrameNr >= 0; textFrameNr--) { 
         for (var headerNr = 0; headerNr < csvData[0].length; headerNr++) {
 
@@ -258,6 +260,7 @@ function fixFile(settingsArray) {
     }
 
     
+    // Loop through the headers, check if all headers are found:
     for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
         if (typeof colItems[headerNr]  == 'undefined') {
             msg += "Header " + headerNr + " not found, text \"" + csvData[0][headerNr] + "\" could not be found in the Input File...\n";
@@ -266,18 +269,20 @@ function fixFile(settingsArray) {
 
     if (msg !== '') {
         alert (msg);
-    } else {
-        for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
-            msg += csvData[0][headerNr] + " found in text frame " + colItems[headerNr] + "\n";
-        }
-    }
+    } //else {
+        // for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
+        //    msg += csvData[0][headerNr] + " found in text frame " + colItems[headerNr] + "\n";
+        // }
+        // show the matches:
+        // alert (msg);
+    // }
 
-    // the amount of CSV Values that were empty:
-    var missingValue = 0;
 
     var startLine = (settingsArray['includeLineZero']) ? 0 : 1;
-
     for (lineNr = startLine; lineNr < csvData.length; lineNr++) {
+
+        // the amount of CSV Values that were empty:
+        var missingValue = 0;
 
         for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
             if (typeof colItems[headerNr] !== 'undefined') {
@@ -287,7 +292,6 @@ function fixFile(settingsArray) {
                 } else {
                     newVal = csvData[lineNr][headerNr];
                 }
-
                 docRef.textFrames[colItems[headerNr]].contents = newVal;
             }
         }
@@ -309,5 +313,9 @@ function fixFile(settingsArray) {
     return true;
 }
 
+// if ran as a stand alone script, like this:
 
+// $ /Applications/Adobe\ Illutrator\ CC\ 2015/Adobe\ Illustrator.app/Contents/MacOS/Adobe\ Illustrator /run csv_bitch.jsx
+
+// you might want to end by closing the Application:
 // app.quit()

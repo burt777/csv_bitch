@@ -1,3 +1,5 @@
+=== Overview ===
+
 This script is intended for use in Adobe Illustrator CC 2015 (but might work in other versions). 
 
 It opens a dialog that allows you to select an input file, a CSV file and an output directory. The first line in the CSV file (line 0), should contain texts that are also in the input file (in text frames, any text object in the image). For every next line, a new file is created where the texts from line 0 are replaced by the texts in this line. 
@@ -5,6 +7,13 @@ It opens a dialog that allows you to select an input file, a CSV file and an out
 If the checkbox for Case Sensitivity is checked, the matching between input file and line 0 is done case Sensitively. This might result in values not being found if the case differs between input file and the first line in the CSV.
 
 If the checkbox for line 0 is checked, a file is generated for line 0 as well. This is identical to the input file (except for letter casing if case sensitivity is NOT on). 
+
+=== Installation ===
+
+Easy:
+Download the file csv_bitch.csv to /Applications/Adobe Illustrator CC 2015/Presets.localized/en_US/Scripts/
+
+=== (Bonus) Merging PDFs ===
 
 If you want to merge all PDFs into one big document (one page per PDF), you can easily use the command line in OSX: go to /Applications/Utilities, double click on "Terminal". Type (or paste):
 
