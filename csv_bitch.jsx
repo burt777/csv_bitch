@@ -265,28 +265,24 @@ function fixFile(settingsArray) {
     // Loop through the headers, check if all headers are found:
     for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
         if (typeof colItems[headerNr]  == 'undefined') {
-            msg += "Header " + headerNr + " not found, text \"" + csvData[0][headerNr] + "\" could not be found in the Input File...\n";
+            msg += "Header " + headerNr + " not found, text \"" + escape(csvData[0][headerNr]) + "\" could not be found in the Input File...\n";
         }
     }
 
     if (msg !== '') {
         // For debugging purposes, it turned out it's convenient to also show a list of all
         // fields we *did* have present:
-        msg += "We did find: " + (docRef.textFrames.length) + " \n";
+        msg += "\nWe did find " + (docRef.textFrames.length) + " text frames:\n\n";
 
         for (textFrameNr = docRef.textFrames.length - 1; textFrameNr >= 0; textFrameNr--) { 
-             msg += " - " + textFrameNr + ": '" + docRef.textFrames[textFrameNr].contents + "'\n";
+             msg += " - " + textFrameNr + ": '" + escape(docRef.textFrames[textFrameNr].contents) + "'\n";
         }
+        msg += "\nIf strange characters like % appear in the search-text, the CSV file is probably saved in the wrong encoding. Save it as UTF-8 plain text csv without quotes.";
 
         alert (msg);
-    } //else {
-        // for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
-        //    msg += csvData[0][headerNr] + " found in text frame " + colItems[headerNr] + "\n";
-        // }
-        // show the matches:
-        // alert (msg);
-    // }
 
+        return false;
+    }
 
     var startLine = (settingsArray['includeLineZero']) ? 0 : 1;
     for (lineNr = startLine; lineNr < csvData.length; lineNr++) {

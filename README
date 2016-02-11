@@ -10,6 +10,10 @@ If the checkbox for line 0 is checked, a file is generated for line 0 as well. T
 
 There's nothing fancy about the way CSV (comma seperated values) are read. There's no escape character (just use a different delimiter if you want to use the ; in a field). There's no support for quoted text, etcetera. If a line contains more values than line 0, the surplus values are simply ignored without warning. If a line contains less values, a warning is added to the file name. 
 
+=== CSV === 
+
+NOTE!! The CSV should be in plain text, utf-8, no quotes around strings. The default delimiter is the semi-colon ;, but if you want to use another delimiter (e.g. because the ; is in use in some of the text), that's fine. If some matches can not be made, a warning will be displayed. If the texts in the warning look "strange" (like bla%A0%28blub%29 containing %-signs), it's a sign the CSV file is not saved in the proper encoding. Choose Utf-8, or otherwise make sure the encoding of the CSV matches the encoding of the input file.
+
 === Installation ===
 
 Easy:
