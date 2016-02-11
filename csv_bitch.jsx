@@ -270,6 +270,14 @@ function fixFile(settingsArray) {
     }
 
     if (msg !== '') {
+        // For debugging purposes, it turned out it's convenient to also show a list of all
+        // fields we *did* have present:
+        msg += "We did find: " + (docRef.textFrames.length) + " \n";
+
+        for (textFrameNr = docRef.textFrames.length - 1; textFrameNr >= 0; textFrameNr--) { 
+             msg += " - " + textFrameNr + ": '" + docRef.textFrames[textFrameNr].contents + "'\n";
+        }
+
         alert (msg);
     } //else {
         // for (headerNr = 0; headerNr < csvData[0].length; headerNr++) {
