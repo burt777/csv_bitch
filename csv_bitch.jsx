@@ -303,7 +303,11 @@ function fixFile(settingsArray) {
         }
 
         extension = getFileExtension(inFile.name);
-        destName = settingsArray['outputDir'] + "/" + inFile.name.replace('.' + extension, "_" + lineNr + ".pdf");
+
+        // a 5-digit number with leading zeroes:
+        lineNrPad = ("000000" + lineNr).substr(-5);
+
+        destName = settingsArray['outputDir'] + "/" + inFile.name.replace('.' + extension, "_" + lineNrPad + ".pdf");
 
         if (missingValue > 0) {
             destName = destName.replace(".pdf", "_(missing_" + missingValue + "_values).pdf");
