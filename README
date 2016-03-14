@@ -19,6 +19,12 @@ NOTE!! The CSV should be in plain text, utf-8, no quotes around strings. The def
 Easy:
 Download the file csv_bitch.csv to /Applications/Adobe Illustrator CC 2015/Presets.localized/en_US/Scripts/
 
+From the command line:
+$ cd "/Applications/Adobe Illustrator CC 2015/Presets.localized/en_US/Scripts" 
+(or whatever your Illustrator version is)
+$ curl "https://raw.githubusercontent.com/burt777/csv_bitch/master/csv_bitch.jsx" -o csv_bitch.jsx
+
+
 === (Bonus) Merging PDFs ===
 
 If you want to merge all PDFs into one big document (one page per PDF), you can easily use the command line in OSX: go to /Applications/Utilities, double click on "Terminal". Type (or paste):
